@@ -1,1 +1,3 @@
 Oh shit, here we go again...
+
+R==15/07/25 --> cree lo basico, terminal y guardar los "comandos"
