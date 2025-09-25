@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+<<<<<<< HEAD
 void	ft_signal(int sig)
 {
 	g_signal = sig; // actualiza la global
@@ -31,6 +32,33 @@ int	header(char **env)
 
 void	run_pipex(char *input, char **env)
 {
+=======
+int	header(char **env)
+{
+	char *input; // puntero para guardar lo que se escribe
+	while (1)
+	{
+		input = readline("minishell> "); // muestra "minishell> " y espera input
+		if (!input)                      // si el usuario pulsa Ctrl+D (EOF), salimos
+			break ;
+		if (strcmp(input, "exit") == 0) // si el usuario escribe "exit", salimos
+		{
+			free(input);
+			break ;
+		}
+		if (*input) // si la línea no está vacía (no es solo Enter)
+		{
+			add_history(input); // guarda el comando en el historial
+			run_pipex(input, env);
+		}
+		free(input);
+	}
+	return (0);
+}
+
+void	run_pipex(char *input, char **env)
+{
+>>>>>>> 9539346 (ejecuta comandos y no se cierra)
 	pid_t	pid;
 	int		status;
 
@@ -60,6 +88,9 @@ int	main(int argc, char **argv, char **env)
 	header(env);
 	return (0);
 }
+<<<<<<< HEAD
 
 
 // AVANZAR CON EL TEMA DE LAS COMILLAS
+=======
+>>>>>>> 9539346 (ejecuta comandos y no se cierra)
