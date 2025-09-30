@@ -6,7 +6,7 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:24:05 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/09/25 20:46:21 by rohidalg         ###   ########.fr       */
+/*   Updated: 2025/09/30 19:53:15 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,14 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include <signal.h>
+
+volatile sig_atomic_t g_signal = 0;  // única global, tipo seguro
+
 
 //------------------------parse.c------------------------//
+void	ft_signal(int sig);
+char	*ft_quote(char *input);
 int		header(char **env);
 void	run_pipex(char *input, char **env);
 
