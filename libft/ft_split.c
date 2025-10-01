@@ -6,13 +6,30 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 18:40:41 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/01/21 18:33:40 by rohidalg         ###   ########.fr       */
+/*   Updated: 2025/10/01 19:52:57 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_countwords(char const *str, char c)
+int	skip_quotes(const char *str, int *i)
+{
+	char	quote;
+
+	if (str[*i] == '\'' || str[*i] == '"')
+	{
+		quote = str[*i];
+		(*i)++;
+		while (str[*i] && str[*i] != quote)
+			(*i)++;
+		if (str[*i] == quote)
+			(*i)++;
+		return (1);
+	}
+	return (0);
+}
+
+int	ft_countwords(const char *str, char c)
 {
 	int	i;
 	int	count;
@@ -21,34 +38,49 @@ int	ft_countwords(char const *str, char c)
 	count = 0;
 	while (str[i])
 	{
-		if ((str[i] != c) && (str[i + 1] == c || str[i + 1] == '\0'))
-			count++;
-		i++;
+		while (str[i] == c)
+			i++;
+		if (!str[i])
+			break ;
+		if (!skip_quotes(str, &i)) // si no hay comillas, salto palabra normal
+		{
+			while (str[i] && str[i] != c && str[i] != '\'' && str[i] != '"')
+				i++;
+		}
+		count++;
 	}
 	return (count);
 }
+
 /*cuenta palabras utilizando el delimitador c,
 y count se imcrementa cada vez que encuentra el primer caracter de la palabra*/
 
-char	*ft_words(char const *str, char c, int *i)
+char	*ft_words(const char *str, char c, int *i)
 {
-	char	*word;
 	int		start;
 	int		len;
+	char	*word;
 
-	while (str[*i] && str[*i] == c)
-		(*i)++;
 	start = *i;
-	while (str[*i] && str[*i] != c)
+	while (str[*i] == c)
 		(*i)++;
-	len = *i - start;
-	word = (char *)malloc(sizeof(char) * (len + 1));
+	start = *i + 1;
+	if (skip_quotes(str, i)) // si hay comillas, i ya avanzó hasta el cierre
+		len = *i - start - 1;
+	else
+	{
+		while (str[*i] && str[*i] != c && str[*i] != '\'' && str[*i] != '"')
+			(*i)++;
+		len = *i - start;
+	}
+	word = malloc(len + 1);
 	if (!word)
 		return (0);
 	ft_strlcpy(word, str + start, len + 1);
 	return (word);
 }
-/*i rastrea la posicion de la palabra y len coge el tamaño 
+
+/*i rastrea la posicion de la palabra y len coge el tamaño
 para el espacio de memoria*/
 
 char	**ft_free(char **string)
@@ -94,3 +126,23 @@ char	**ft_split(char const *str, char c)
 
 /*asigno memoria con calloc y sabiendo las palabras que hay, hago el tamaño,
 luego con ft_words las agrega a la matriz, y en caso de error uso el free*/
+
+
+
+
+
+
+
+
+/*solucione este caso:
+"echo 'hola mundo'"
+
+
+pero ya no funciona de normal
+
+
+SOLUCIONA ESTO PARA QUE FUNCIONE
+minishell> echo "hola"
+Palabra 0: cho
+Palabra 1: hola
+command not found: cho*/
