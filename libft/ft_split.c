@@ -6,33 +6,38 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 18:40:41 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/10/01 19:52:57 by rohidalg         ###   ########.fr       */
+/*   Updated: 2025/10/04 17:30:46 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	skip_quotes(const char *str, int *i)
+int	skip_quotes(const char *str, int *i, int *start)
 {
 	char	quote;
+	int		len;
 
 	if (str[*i] == '\'' || str[*i] == '"')
 	{
 		quote = str[*i];
-		(*i)++;
+		(*i)++;      
+		*start = *i; 
 		while (str[*i] && str[*i] != quote)
 			(*i)++;
+		len = *i - *start; 
 		if (str[*i] == quote)
-			(*i)++;
-		return (1);
+			(*i)++; 
+		return (len);
 	}
-	return (0);
+	return (-1); 
 }
 
 int	ft_countwords(const char *str, char c)
 {
 	int	i;
 	int	count;
+	int	len;
+	int	start;
 
 	i = 0;
 	count = 0;
@@ -42,8 +47,10 @@ int	ft_countwords(const char *str, char c)
 			i++;
 		if (!str[i])
 			break ;
-		if (!skip_quotes(str, &i)) // si no hay comillas, salto palabra normal
+		len = skip_quotes(str, &i, &start);
+		if (len == -1)
 		{
+			start = i;
 			while (str[i] && str[i] != c && str[i] != '\'' && str[i] != '"')
 				i++;
 		}
@@ -61,21 +68,21 @@ char	*ft_words(const char *str, char c, int *i)
 	int		len;
 	char	*word;
 
-	start = *i;
 	while (str[*i] == c)
 		(*i)++;
-	start = *i + 1;
-	if (skip_quotes(str, i)) // si hay comillas, i ya avanzó hasta el cierre
-		len = *i - start - 1;
-	else
+	if (!str[*i])
+		return (NULL);
+	len = skip_quotes(str, i, &start);
+	if (len == -1)
 	{
+		start = *i;
 		while (str[*i] && str[*i] != c && str[*i] != '\'' && str[*i] != '"')
 			(*i)++;
 		len = *i - start;
 	}
 	word = malloc(len + 1);
 	if (!word)
-		return (0);
+		return (NULL);
 	ft_strlcpy(word, str + start, len + 1);
 	return (word);
 }
@@ -126,23 +133,3 @@ char	**ft_split(char const *str, char c)
 
 /*asigno memoria con calloc y sabiendo las palabras que hay, hago el tamaño,
 luego con ft_words las agrega a la matriz, y en caso de error uso el free*/
-
-
-
-
-
-
-
-
-/*solucione este caso:
-"echo 'hola mundo'"
-
-
-pero ya no funciona de normal
-
-
-SOLUCIONA ESTO PARA QUE FUNCIONE
-minishell> echo "hola"
-Palabra 0: cho
-Palabra 1: hola
-command not found: cho*/

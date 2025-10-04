@@ -22,7 +22,6 @@ int	header(char **env)
 		if (*input) // si la línea no está vacía (no es solo Enter)
 		{
 			add_history(input); // guarda el comando en el historial
-			// input = ft_quote(input);
 			run_pipex(input, env);
 		}
 		free(input);

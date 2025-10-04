@@ -6,7 +6,7 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 00:29:46 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/10/01 19:20:14 by rohidalg         ###   ########.fr       */
+/*   Updated: 2025/10/04 17:31:54 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,27 +74,16 @@ int	ft_file(char *file, int option)
 
 void	ft_exec(char *command, char **env)
 {
-	int i;
-	char **cmmd_part;
+	char	**cmmd_part;
 
-	i = 0;
 	cmmd_part = ft_split(command, ' ');
 	if (!cmmd_part)
-		return;
-
-	while (cmmd_part[i])
-	{
-		printf("Palabra %d: %s\n", i, cmmd_part[i]);
-		i++;
-	}
-
+		return ;
 	if (execve(ft_getpath(cmmd_part[0], env), cmmd_part, env) == -1)
 	{
 		ft_putstr_fd("command not found: ", 2);
 		ft_putendl_fd(cmmd_part[0], 2);
 		ft_free(cmmd_part);
-		// exit(127);
+		exit(127);
 	}
 }
-
-	
