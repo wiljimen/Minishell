@@ -9,7 +9,9 @@ CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address -g3
 
 INCLUDES = -I ../libft
 
-SRCs = pipex.c	env_check.c	ft_utils.c \
+SRCs = pipex.c	\
+		env_check.c	\
+		ft_utils.c \
 
 DIR_OBJs = OBJECTS
 
@@ -17,9 +19,8 @@ OBJs = $(addprefix $(DIR_OBJs)/,$(SRCs:%.c=%.o))
 
 all: dir_lib dir_objs pipex.a
 
-# Crear librería estática
-pipex.a: $(OBjs)
-	@ar rcs pipex.a $(OBjs)
+pipex.a: $(OBJs)
+	@ar rcs pipex.a $(OBJs)
 
 $(DIR_OBJs)/%.o: %.c | $(DIR_OBJs)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
@@ -42,4 +43,5 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re dir_lib dir_objs
+
 

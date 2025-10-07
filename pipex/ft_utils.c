@@ -6,51 +6,84 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 00:29:46 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/03/26 00:32:17 by rohidalg         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:21:06 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void ft_exit(char *str)
+void	ft_exit(char *str, int ex)
 {
-    ft_putstr_fd(str, 2);
-    exit(0);
+	ft_putstr_fd(str, 2);
+	exit(ex);
 }
 
-void ft_check_argv(int argc, char **argv)
+void	ft_check_argv(int argc, char **argv)
 {
-    if (argc >= 5)
-        ft_exit("it's necessary more or at least 5 arguments\n");
-    if (!argv[3][0])
-        exit(127);
+	if (argc != 5)
+		ft_exit("more or less than 5 arguments\n", 0);
+	if (access(argv[1], O_RDONLY) == -1 && access(argv[4], W_OK) == -1)
+		ft_exit("no such file or directory\npermission denied\n", 1);
+	if (access(argv[1], O_RDONLY) == -1)
+		ft_putstr_fd("no such file or directory\n", 2);
+	if (access(argv[1], F_OK) == 0 && access(argv[1], R_OK) == -1)
+		ft_exit("permission denied\n", 0);
+	if (access(argv[4], W_OK) == -1)
+		ft_putstr_fd("permission denied\n", 2);
+	if (!argv[2][0] && !argv[3][0])
+		ft_exit("permission denied\npermission denied\n", 126);
+	if (!argv[3][0])
+		ft_exit("permission denied\n", 126);
+	if (!argv[2][0])
+		ft_exit("permission denied\n", 0);
 }
 
-int ft_file(char *file, int option)
+char	*ft_check_path(char **path, char *cmd)
 {
-    int tmp;
+	int		i;
+	char	*tmp;
+	char	*path_part;
 
-    tmp = 0;
-    if (option == 0)
-        tmp = open(file, O_RDONLY, 0777);
-    if (option == 1)
-        tmp = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-    if (tmp == -1)
-        exit(EXIT_FAILURE);
-    return (tmp);
+	i = 0;
+	while (path[i])
+	{
+		tmp = ft_strjoin(path[i], "/");
+		path_part = ft_strjoin(tmp, cmd);
+		free(tmp);
+		if (!access(path_part, F_OK | X_OK))
+			return (path_part);
+		free(path_part);
+		i++;
+	}
+	return (NULL);
 }
 
-void ft_exec(char *command, char **env)
+int	ft_file(char *file, int option)
 {
-    char **cmmd_part;
+	int	tmp;
 
-    cmmd_part = ft_split(command, ' ');
-    if (execve(ft_getpath(cmmd_part[0], env), cmmd_part, env) == -1)
-    {
-        ft_putstr_fd("command not found: ", 2);
-        ft_putendl_fd(cmmd_part[0], 2);
-        ft_free(cmmd_part);
-        exit(127);
-    }
+	tmp = 0;
+	if (option == 0)
+		tmp = open(file, O_RDONLY, 0777);
+	if (option == 1)
+		tmp = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (tmp == -1)
+		exit(EXIT_FAILURE);
+	return (tmp);
 }
-// exec reemplaza la funcion para ejecutar el comando si llega a encontrarlo
+
+void	ft_exec(char *command, char **env)
+{
+	char	**cmmd_part;
+
+	cmmd_part = ft_split(command, ' ');
+	if (!cmmd_part)
+		return ;
+	if (execve(ft_getpath(cmmd_part[0], env), cmmd_part, env) == -1)
+	{
+		ft_putstr_fd("command not found: ", 2);
+		ft_putendl_fd(cmmd_part[0], 2);
+		ft_free(cmmd_part);
+		exit(127);
+	}
+}
