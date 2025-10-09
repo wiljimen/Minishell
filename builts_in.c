@@ -8,6 +8,32 @@ void    built_cd(char **cmd)
         perror("cd");
 }
 
+char	**get_entire_env(char **env)
+{
+	int i;
+	int j;
+	char *sub;
+	char **new_env;
+
+	i = 0;
+	if (!*env)
+		exit(EXIT_FAILURE);
+	while(env[i])
+		i++;
+	new_env = ft_calloc(i, sizeof(char));
+	i = 0;
+	while (env[i])
+	{
+		j = 0;
+		while (env[i][j])
+			j++;
+		sub = ft_substr(env[i], 0, j);
+		free(sub);
+		i++;
+	}
+	return (new_env);
+}
+
 void	built_pwd(void)
 {
 	char *cwd;
@@ -25,23 +51,26 @@ void	built_pwd(void)
 	free(cwd);
 }
 
-void	built_env(char **envp)
+void	built_env(char **g_env)
 {
 	int	i;
 
 	i = 0;
-	while (envp[i])
+	while (g_env[i])
 	{
-		printf("%s\n", envp[i]);
+		printf("%s\n", g_env[i]);
 		i++;
 	}
 }
 
-// int main(int argc, char **argv, char **envp)
+// void	built_unset()
+
+// int main(int argc, char **argv, char **env)
 // {
 // 	(void)argv;
 // 	(void)argc;
-//     built_env(envp);
+
+// 	char **g_env = get_entire_env(env);
+//     built_env(g_env);
 //     return (0);
 // }
-// Probando, hay que verificar todas las opciones, directorio anterior con .. y con -, directorio actual.
