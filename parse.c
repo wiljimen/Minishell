@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: will <will@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/25 20:31:39 by will              #+#    #+#             */
+/*   Updated: 2025/11/25 20:34:35 by will             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "minishell.h"
 
@@ -7,6 +19,8 @@ void	check_built_in(char *cmd, char **g_env)
 	{
 		if (strcmp(cmd, "pwd") == 0)
 			built_pwd();
+		// else if (!strcmp(cmd, "unset"))
+		// 	g_env =
 		// else if (strcmp(cmd, "cd") == 0)
 		// 	built_cd(cmd[1]);
 		else if (strcmp(cmd, "exit") == 0)
@@ -71,4 +85,4 @@ int	main(int argc, char **argv, char **env)
 	header(env, g_env);
 	return (0);
 }
-// AVANZAR CON EL TEMA DE LAS COMILLAS
+

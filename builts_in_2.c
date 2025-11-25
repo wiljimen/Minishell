@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builts_in_2.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: will <will@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/25 20:31:44 by will              #+#    #+#             */
+/*   Updated: 2025/11/25 20:34:02 by will             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void    built_cd(char **cmd)
@@ -62,15 +74,3 @@ void	built_env(char **g_env)
 		i++;
 	}
 }
-
-// void	built_unset()
-
-// int main(int argc, char **argv, char **env)
-// {
-// 	(void)argv;
-// 	(void)argc;
-
-// 	char **g_env = get_entire_env(env);
-//     built_env(g_env);
-//     return (0);
-// }

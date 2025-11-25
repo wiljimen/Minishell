@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: will <will@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:24:05 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/10/09 19:39:01 by wiljimen         ###   ########.fr       */
+/*   Updated: 2025/11/25 20:34:02 by will             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,12 @@
 
 # include "libft/libft.h"
 # include "pipex/pipex.h"
-# include "pipex/pipex.h"
 # include <pthread.h>
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
 # include <string.h>
 # include <unistd.h>
 # include <signal.h>
