@@ -6,38 +6,42 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 18:40:41 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/10/07 15:57:00 by rohidalg         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:26:15 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	skip_quotes(const char *str, int *i, int *start)
+int	skip_quotes(const char *str, int *i)
 {
 	char	quote;
 	int		len;
 
-	if (str[*i] == '\'' || str[*i] == '"')
+	quote = str[*i];
+	len = 1;
+	(*i)++;
+	while (str[*i] && str[*i] != quote)
 	{
-		quote = str[*i];
 		(*i)++;
-		*start = *i;
-		while (str[*i] && str[*i] != quote)
-			(*i)++;
-		len = *i - *start;
-		if (str[*i] == quote)
-			(*i)++;
-		return (len);
+		len++;
 	}
-	return (-1);
+	if (str[*i] == quote)
+	{
+		(*i)++;
+		len++;
+	}
+	else
+	{
+		fprintf(stderr, "Error: comilla %c sin cerrar\n", quote);
+		exit(EXIT_FAILURE);
+	}
+	return (len);
 }
 
 int	ft_countwords(const char *str, char c)
 {
 	int	i;
 	int	count;
-	int	len;
-	int	start;
 
 	i = 0;
 	count = 0;
@@ -47,13 +51,11 @@ int	ft_countwords(const char *str, char c)
 			i++;
 		if (!str[i])
 			break ;
-		len = skip_quotes(str, &i, &start);
-		if (len == -1)
-		{
-			start = i;
+		if (str[i] == '\'' || str[i] == '"')
+			skip_quotes(str, &i);
+		else
 			while (str[i] && str[i] != c && str[i] != '\'' && str[i] != '"')
 				i++;
-		}
 		count++;
 	}
 	return (count);
@@ -69,14 +71,13 @@ char	*ft_words(const char *str, char c, int *i)
 		(*i)++;
 	if (!str[*i])
 		return (NULL);
-	len = skip_quotes(str, i, &start);
-	if (len == -1)
-	{
-		start = *i;
-		while (str[*i] && str[*i] != c && str[*i] != '\'' && str[*i] != '"')
+	start = *i;
+	if (str[*i] == '\'' || str[*i] == '"')
+		len = skip_quotes(str, i);
+	else
+		while (str[*i] && str[*i] != c)
 			(*i)++;
-		len = *i - start;
-	}
+	len = *i - start;
 	word = malloc(len + 1);
 	if (!word)
 		return (NULL);
@@ -109,10 +110,10 @@ char	**ft_split(char const *str, char c)
 		return (0);
 	countwords = ft_countwords(str, c);
 	string = ft_calloc(countwords + 1, sizeof(char *));
-	if (string == 0)
+	if (!string)
 		return (0);
-	i_string = 0;
 	i = 0;
+	i_string = 0;
 	while (i_string < countwords)
 	{
 		string[i_string] = ft_words(str, c, &i);
@@ -120,7 +121,7 @@ char	**ft_split(char const *str, char c)
 			return (ft_free(string));
 		i_string++;
 	}
-	string[i_string] = 0;
+	string[i_string] = NULL;
 	return (string);
 }
 

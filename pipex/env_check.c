@@ -1,56 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_check.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 18:25:21 by rohidalg          #+#    #+#             */
+/*   Updated: 2025/12/10 18:25:22 by rohidalg         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-char *ft_getenv(char *name, char **env)
+char	*expand_in_quotes(const char *str, char **env)
 {
-	int i;
-	int j;
-	char *sub;
+	int		i;
+	int		start;
+	int		v;
+	char	*var;
 
 	i = 0;
-	if (!*env)
-		exit(EXIT_FAILURE);
-	while (env[i])
+	start = ++i;
+	while (str[i] && str[i] != '"')
 	{
-		j = 0;
-		while (env[i][j] && env[i][j] != '=')
-			j++;
-		sub = ft_substr(env[i], 0, j);
-		if (ft_strcmp(sub, name) == 0)
+		if (str[i] == '$')
 		{
-			free(sub);
-			return (env[i] + j + 1);
+			v = ++i;
+			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+				i++;
+			var = ft_getenv(ft_substr(str, v, i - v), env);
+			return (ft_strjoin(ft_substr(str, start, v - start - 1), var));
 		}
-		free(sub);
 		i++;
 	}
-	return (0);
+	return (ft_substr(str, start, i - start));
 }
-// busca la variable del entorno que deseemmos y nos devuelve su valor
 
-char *ft_getpath(char *command, char **env)
+char	*ft_quotes(const char *str, char **env)
 {
-	int i;
-	char **path;
-	char *tmp;
-	char *path_part;
-	char **cmmd;
+	int	i;
+	int	start;
 
-	i = -1;
-	path = ft_split(ft_getenv("PATH", env), ':');
-	cmmd = ft_split(command, ' ');
-	while (path[i++])
+	i = 0;
+	if (str[i] == '\'')
 	{
-		tmp = ft_strjoin(path[i], "/");		  // "/usr/bin/"
-		path_part = ft_strjoin(tmp, cmmd[0]); // "/usr/bin/ls"
-		free(tmp);
-		if (access(path_part, F_OK | X_OK) == 0) // existe? | ejecutable?
-		{
-			ft_free(cmmd);
-			return (path_part);
-		}
-		free(path_part);
+		start = ++i;
+		while (str[i] && str[i] != '\'')
+			i++;
+		return (ft_substr(str, start, i - start));
 	}
-	ft_free(path);
-	ft_free(cmmd);
-	return (command);
+	if (str[i] == '"')
+		return (expand_in_quotes(str, env));
+	return (ft_strdup(str));
 }
