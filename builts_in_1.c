@@ -6,7 +6,7 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 15:09:38 by will23            #+#    #+#             */
-/*   Updated: 2025/12/20 17:21:58 by wiljimen         ###   ########.fr       */
+/*   Updated: 2025/12/28 17:52:35 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@ void	built_cd(char **cmd)
 {
 	if (cmd[1] == NULL)
 		chdir(getenv("HOME"));
+	else if (cmd[1] != NULL)
+		chdir(cmd[1]);
+	else if (cmd[1][0] == '-')
+		chdir(getenv("OLDPWD"));
 	else if (cmd[1] != 0)
 		perror("cd");
 }
@@ -75,3 +79,5 @@ void	built_env(char **g_env)
 		i++;
 	}
 }
+
+// int	built_echo(char *name)

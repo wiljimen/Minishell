@@ -6,7 +6,7 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/19 08:18:28 by wiljimen          #+#    #+#             */
-/*   Updated: 2025/12/20 16:42:51 by wiljimen         ###   ########.fr       */
+/*   Updated: 2025/12/21 18:28:40 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,19 @@
 int	env_replace(char *arg, char **g_env)
 {
 	int	i;
+	int	var_len;
 
+	if (!arg || !g_env)
+		return (0);
+	var_len = 0;
+	while (arg[var_len] && arg[var_len] != '=')
+		var_len++;
 	i = 0;
-	while (g_env && g_env[i])
+	while (g_env[i])
 	{
-		if (var_same(g_env[i], arg))
+		if (ft_strncmp(g_env[i], arg, var_len) == 0
+			&& g_env[i][var_len] == '='
+			&& (arg[var_len] == '=' || arg[var_len] == '\0'))
 		{
 			free(g_env[i]);
 			g_env[i] = ft_strdup(arg);
@@ -29,6 +37,7 @@ int	env_replace(char *arg, char **g_env)
 	}
 	return (0);
 }
+
 
 char	**add_env_var(char *var, char **g_env)
 {

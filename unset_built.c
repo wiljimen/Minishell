@@ -6,7 +6,7 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 19:34:58 by wiljimen          #+#    #+#             */
-/*   Updated: 2025/12/20 16:51:27 by wiljimen         ###   ########.fr       */
+/*   Updated: 2025/12/28 18:18:24 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,12 +105,19 @@ void	unset_var_from_array(char **array, char *var_delete)
 t_vars	*builtin_unset(char **args, t_vars *vars, char **g_env)
 {
 	int	i;
+	int	status;
 
+	status = 0;
 	i = 1;
 	while (args[i])
 	{
 		if (!is_valid_var_name(args[i]))
-			printf("minishell: unset: `%s`: not a valid identifier\n", args[i]);
+		{
+			ft_putstr_fd("minishell: unset: `", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putendl_fd("': not a valid identifier", 2);
+			status = 1;
+		}
 		else
 		{
 			unset_var_from_array(g_env, args[i]);
@@ -118,6 +125,7 @@ t_vars	*builtin_unset(char **args, t_vars *vars, char **g_env)
 		}
 		i++;
 	}
+	g_exit_status = status;
 	return (vars);
 }
 

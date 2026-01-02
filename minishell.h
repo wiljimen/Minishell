@@ -6,7 +6,7 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:24:05 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/12/20 17:24:22 by wiljimen         ###   ########.fr       */
+/*   Updated: 2025/12/28 18:12:44 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+
+extern int	g_exit_status;
 
 typedef struct s_vars
 {
@@ -58,6 +60,10 @@ int					find_var(char *var_to_see, t_vars *vars_list);
 void				vars_add_new(char *arg, t_vars **vars);
 int					vars_set_if_exists(char *arg, t_vars *vars);
 void				vars_mark_exported(char *name, t_vars **vars);
+void				print_exported(t_vars *vars_names);
+void				sort_names(char **vars_names);
+char				**vars_copy(t_vars *vars);
+int					vars_counter(t_vars *vars);
 
 //-----------------------VARIABLES-----------------------------//
 

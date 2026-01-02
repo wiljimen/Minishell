@@ -6,21 +6,23 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:31:39 by will              #+#    #+#             */
-/*   Updated: 2025/12/20 17:19:01 by wiljimen         ###   ########.fr       */
+/*   Updated: 2025/12/28 18:28:04 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	g_exit_status = 0;
+
 void	check_built_in(char **cmd, char ***g_env, t_vars **vars)
 {
 	if (!cmd || cmd[0] == NULL)
 		return ;
-	if (strcmp(cmd[0], "pwd") == 0)
+	if (ft_strcmp(cmd[0], "pwd") == 0)
 		built_pwd();
-	else if (strcmp(cmd[0], "exit") == 0)
+	else if (ft_strcmp(cmd[0], "exit") == 0)
 		exit(EXIT_SUCCESS);
-	else if (strcmp(cmd[0], "env") == 0)
+	else if (ft_strcmp(cmd[0], "env") == 0)
 		built_env(*g_env);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 		*vars = builtin_unset(cmd, *vars, *g_env);
@@ -48,7 +50,7 @@ int	header(char **g_env, t_vars **vars)
 				if (cmd && cmd[0])
 					check_built_in(cmd, &g_env, vars);
 				add_history(input);
-				run_pipex(input, g_env);
+				// run_pipex(input, g_env);
 				ft_free(cmd);
 			}
 		}

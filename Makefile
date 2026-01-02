@@ -22,6 +22,7 @@ SRCs =	parse.c	\
 		vars_init.c \
 		env_utils.c \
 		export_built.c \
+		export_utils.c \
 		unset_built.c \
 
 MAKEFLAG += --silent

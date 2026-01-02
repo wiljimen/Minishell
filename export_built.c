@@ -6,7 +6,7 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/11 03:53:40 by wiljimen          #+#    #+#             */
-/*   Updated: 2025/12/20 17:12:31 by wiljimen         ###   ########.fr       */
+/*   Updated: 2025/12/28 18:24:21 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,6 @@ int	valid_var_name(char *var)
 		i++;
 	}
 	return (1);
-}
-
-t_vars	*vars_find(t_vars *vars, char *name)
-{
-	while (vars)
-	{
-		if (ft_strcmp(vars->name, name) == 0)
-			return (vars);
-		vars = vars->next;
-	}
-	return (NULL);
 }
 
 
@@ -92,32 +81,42 @@ void	vars_add_new(char *arg, t_vars **vars)
 	vars_add_back(vars, new);
 }
 
-
-char	**builtin_export(char **args, t_vars **vars_list, char **g_env)
+static char	**export_one(char *arg, t_vars **vars, char **g_env)
 {
-	int		i;
 	char	*name;
 
-	i = 1;
-	while(args && args[i])
+	name = get_var_name(arg);
+	if (!name || !valid_var_name(name))
 	{
-		name = get_var_name(args[i]);
-		if (!name || !valid_var_name(name))
-		{
-			printf("Error bad var name\n");
-			free(name);
-			i++;
-			continue ;
-		}
-		if (ft_strchr(args[i], '='))
-		{
-			if (!find_var(args[i], *vars_list))
-				vars_add_new(args[i], vars_list);
-			g_env = env_set(args[i], g_env);
-		}
-		else
-			vars_mark_exported(name, vars_list);	
+		printf("minishell: export: `%s`: not a valid identifier\n", arg);
 		free(name);
+		return (g_env);
+	}
+	if (ft_strchr(arg, '='))
+	{
+		if (!find_var(arg, *vars))
+			vars_add_new(arg, vars);
+		g_env = env_set(arg, g_env);
+	}
+	else
+		vars_mark_exported(name, vars);
+	free(name);
+	return (g_env);
+}
+
+char	**builtin_export(char **args, t_vars **vars, char **g_env)
+{
+	int	i;
+
+	if (!args || !args[1])
+	{
+		print_exported(*vars);
+		return (g_env);
+	}
+	i = 1;
+	while (args[i])
+	{
+		g_env = export_one(args[i], vars, g_env);
 		i++;
 	}
 	return (g_env);
