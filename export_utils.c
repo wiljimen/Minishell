@@ -6,7 +6,7 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 19:13:36 by wiljimen          #+#    #+#             */
-/*   Updated: 2025/12/28 18:38:21 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/19 16:40:24 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	**vars_copy(t_vars *vars)
 		ft_free(vars_names);
 		return (NULL);
 	}
-	while (vars_names[i])
+	while (vars)
 	{
 		vars_names[i] = ft_strdup(vars->name);
 		vars = vars->next;

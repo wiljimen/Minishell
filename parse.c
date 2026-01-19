@@ -6,7 +6,7 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:31:39 by will              #+#    #+#             */
-/*   Updated: 2025/12/28 18:28:04 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/19 16:18:19 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,15 @@ void	check_built_in(char **cmd, char ***g_env, t_vars **vars)
 {
 	if (!cmd || cmd[0] == NULL)
 		return ;
-	if (ft_strcmp(cmd[0], "pwd") == 0)
-		built_pwd();
-	else if (ft_strcmp(cmd[0], "exit") == 0)
-		exit(EXIT_SUCCESS);
-	else if (ft_strcmp(cmd[0], "env") == 0)
-		built_env(*g_env);
-	else if (ft_strcmp(cmd[0], "unset") == 0)
-		*vars = builtin_unset(cmd, *vars, *g_env);
-	else if (ft_strcmp(cmd[0], "export") == 0)
-    	*g_env = builtin_export(cmd, vars, *g_env);
+	if (ft_strcmp(cmd[0], "pwd") == 0
+		|| ft_strcmp(cmd[0], "exit")  == 0
+		|| ft_strcmp(cmd[0], "env") == 0)
+		pwd_exit_env(cmd, g_env);
+	else if (ft_strcmp(cmd[0], "unset") == 0
+		|| ft_strcmp(cmd[0], "export") == 0
+		|| ft_strcmp(cmd[0], "cd") == 0)
+		unset_export_cd_echo(cmd, g_env, vars);
 }
-// else if (strcmp(cmd, "cd") == 0)
-// 	built_cd(cmd[1]);
 
 int	header(char **g_env, t_vars **vars)
 {

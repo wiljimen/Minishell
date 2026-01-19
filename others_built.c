@@ -1,45 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builts_in_1.c                                      :+:      :+:    :+:   */
+/*   others_built.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 15:09:38 by will23            #+#    #+#             */
-/*   Updated: 2025/12/28 17:52:35 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/19 16:40:41 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	built_cd(char **cmd)
-{
-	if (cmd[1] == NULL)
-		chdir(getenv("HOME"));
-	else if (cmd[1] != NULL)
-		chdir(cmd[1]);
-	else if (cmd[1][0] == '-')
-		chdir(getenv("OLDPWD"));
-	else if (cmd[1] != 0)
-		perror("cd");
-}
-
-void	built_pwd(void)
+void	builtin_pwd(void)
 {
 	char	*cwd;
 
-	cwd = malloc(1024);
+	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		free(cwd);
-		exit(EXIT_FAILURE);
+		perror("minishell: pwd");
+		g_exit_status = 1;
+		return ;
 	}
-	if (getcwd(cwd, 1024) != NULL)
-		printf("%sAA\n", cwd);
-	else
-		perror("pwd");
+	printf("%s\n", cwd);
 	free(cwd);
+	g_exit_status = 0;
 }
+
 
 char	**get_entire_env(char **env)
 {
@@ -80,4 +68,26 @@ void	built_env(char **g_env)
 	}
 }
 
-// int	built_echo(char *name)
+void	pwd_exit_env(char **cmd, char ***g_env)
+{
+	if (!cmd || cmd[0] == NULL)
+		return ;
+	if (ft_strcmp(cmd[0], "pwd") == 0)
+		builtin_pwd();
+	else if (ft_strcmp(cmd[0], "exit") == 0)
+		exit(EXIT_SUCCESS);
+	else if (ft_strcmp(cmd[0], "env") == 0)
+		built_env(*g_env);
+}
+
+void	unset_export_cd_echo(char **cmd, char ***g_env, t_vars **vars)
+{
+	if (!cmd || cmd[0] == NULL)
+		return ;
+	else if (ft_strcmp(cmd[0], "unset") == 0)
+		*vars = builtin_unset(cmd, *vars, *g_env);
+	else if (ft_strcmp(cmd[0], "export") == 0)				
+    	*g_env = builtin_export(cmd, vars, *g_env);
+	else if (strcmp(cmd[0], "cd") == 0)
+		*g_env = builtin_cd(cmd, vars, *g_env);
+}

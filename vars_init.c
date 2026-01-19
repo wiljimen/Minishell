@@ -6,14 +6,11 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 14:50:42 by will23            #+#    #+#             */
-/*   Updated: 2025/12/20 17:26:07 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/19 16:40:51 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// Devuelve una copia del nombre antes de '='
-// "PATH=/usr/bin" -> "PATH"
 
 char	*get_var_name(char *str)
 {
@@ -26,9 +23,6 @@ char	*get_var_name(char *str)
 		i++;
 	return (ft_substr(str, 0, i));
 }
-
-// Devuelve una copia del valor después de '='
-// "PATH=/usr/bin" -> "/usr/bin"
 
 char	*get_var_value(char *str)
 {
@@ -43,8 +37,6 @@ char	*get_var_value(char *str)
 		return (NULL);
 	return (ft_substr(str, i + 1, ft_strlen(str) - i - 1));
 }
-
-// Crea un nodo t_vars a partir de una línea del env: "NAME=VALUE"
 
 t_vars	*new_var_node(char *env_line)
 {
@@ -66,8 +58,6 @@ t_vars	*new_var_node(char *env_line)
 	return (node);
 }
 
-// Añade un nodo al final de la lista vars
-
 void	vars_add_back(t_vars **head, t_vars *new)
 {
 	t_vars	*tmp;
@@ -84,8 +74,6 @@ void	vars_add_back(t_vars **head, t_vars *new)
 		tmp = tmp->next;
 	tmp->next = new;
 }
-
-// Crea la lista t_vars a partir de g_env (char **)
 
 t_vars	*init_vars_from_env(char **g_env)
 {
