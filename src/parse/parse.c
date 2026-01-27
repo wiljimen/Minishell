@@ -6,49 +6,70 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:31:39 by will              #+#    #+#             */
-/*   Updated: 2026/01/19 16:18:19 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/27 19:08:42 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
-int	g_exit_status = 0;
+int		g_exit_status = 0;
 
-void	check_built_in(char **cmd, char ***g_env, t_vars **vars)
+int	check_built_in(char **cmd, char ***g_env, t_vars **vars)
 {
 	if (!cmd || cmd[0] == NULL)
-		return ;
-	if (ft_strcmp(cmd[0], "pwd") == 0
-		|| ft_strcmp(cmd[0], "exit")  == 0
+		return (0);
+	if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "exit") == 0
 		|| ft_strcmp(cmd[0], "env") == 0)
+	{
 		pwd_exit_env(cmd, g_env);
-	else if (ft_strcmp(cmd[0], "unset") == 0
-		|| ft_strcmp(cmd[0], "export") == 0
-		|| ft_strcmp(cmd[0], "cd") == 0)
+		return (1);
+	}
+	else if (ft_strcmp(cmd[0], "unset") == 0 || ft_strcmp(cmd[0], "export") == 0
+		|| ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "echo") == 0)
+	{
 		unset_export_cd_echo(cmd, g_env, vars);
+		return (1);
+	}
+	return (0);
 }
 
-int	header(char **g_env, t_vars **vars)
+void	pipex_or_builtin(char *input, char ***g_env, t_vars **vars)
+{
+	char	**args;
+	int		is_builtin;
+
+	if (has_pipe(input))
+		return (run_pipeline(input, *g_env));
+	args = split_quote_aware(input);
+	if (!args || !args[0])
+	{
+		ft_free(args);
+		return ;
+	}
+	expand_args_skip(args, *g_env, g_exit_status);
+	is_builtin = check_built_in(args, g_env, vars);
+	if (!is_builtin)
+		run_exec_args(args, *g_env);
+	ft_free(args);
+}
+
+int	header(char ***g_env, t_vars **vars)
 {
 	char	*input;
-	char	**cmd;
 
 	while (1)
 	{
+		handle_signals();
 		input = readline("minishell> ");
 		if (!input)
-			break ;
-		if (*input)
 		{
-			if (!invalid_input(input))
-			{
-				cmd = ft_split(input, ' ');
-				if (cmd && cmd[0])
-					check_built_in(cmd, &g_env, vars);
-				add_history(input);
-				// run_pipex(input, g_env);
-				ft_free(cmd);
-			}
+			ft_putstr_fd("exit\n", 2);
+			break ;
+		}
+		if (*input && !invalid_input(input))
+		{
+			add_history(input);
+			pipex_or_builtin(input, g_env, vars);
 		}
 		free(input);
 	}
@@ -68,23 +89,10 @@ void	run_pipex(char *input, char **g_env)
 	}
 	if (pid == 0)
 	{
-		ft_exec(input, g_env); // Proceso hijo: ejecuta el comando
+		ft_exec(input, g_env);
 		exit(127);
 	}
 	else
-		waitpid(pid, &status, 0); // Proceso padre: espera a que termine el hijo
+		waitpid(pid, &status, 0);
 }
 
-int	main(int argc, char **argv, char **env)
-{
-	char	**g_env;
-	t_vars	*vars;
-
-	(void)argc;
-	(void)argv;
-	g_env = NULL;
-	g_env = get_entire_env(env);
-	vars = init_vars_from_env(g_env);
-	header(g_env, &vars);
-	return (0);
-}

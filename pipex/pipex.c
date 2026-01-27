@@ -6,11 +6,17 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 13:36:17 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/09/25 19:31:23 by rohidalg         ###   ########.fr       */
+/*   Updated: 2026/01/27 16:54:26 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	ft_exit(char *str, int ex)
+{
+	ft_putstr_fd(str, 2);
+	exit(ex);
+}
 
 char	*ft_getenv(char *name, char **env)
 {
@@ -34,27 +40,32 @@ char	*ft_getenv(char *name, char **env)
 	return (NULL);
 }
 
-char	*ft_getpath(char *command, char **env)
+char	*ft_getpath(char *cmd, char **env)
 {
 	char	**path;
-	char	**cmmd;
-	char	*result;
+	char	*res;
+	char	*path_env;
 
-	if (!command)
+	res = NULL;
+	if (!cmd || !*cmd)
 		return (NULL);
-	cmmd = ft_split(command, ' ');
-	if (!cmmd)
-		return (NULL);
-	path = ft_split(ft_getenv("PATH", env), ':');
-	if (!path)
+	if (ft_strchr(cmd, '/'))
 	{
-		ft_free(cmmd);
-		return (NULL);
+		if (access(cmd, F_OK) == 0)
+			res = ft_strdup(cmd);
+		if (access(cmd, X_OK) == 0)
+			res = ft_strdup(cmd);
+		return (res);
 	}
-	result = ft_check_path(path, cmmd[0]);
-	ft_free(cmmd);
+	path_env = ft_getenv("PATH", env);
+	if (!path_env)
+		return (NULL);
+	path = ft_split(path_env, ':');
+	if (!path)
+		return (NULL);
+	res = ft_check_path(path, cmd);
 	ft_free(path);
-	return (result);
+	return (res);
 }
 
 void	ft_son(char **argv, char **env, int *fd_p)

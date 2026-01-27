@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 11:55:13 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/12/19 08:06:44 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/19 17:12:12 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
+// # include "../minishell.h"
 // # include "../minishell.h"
 # include <stddef.h>
 # include <stdio.h>
@@ -54,6 +55,7 @@ char				*ft_substr(char const *s, unsigned int start, size_t len);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strtrim(char const *s1, char const *set);
 char				**ft_free(char **string);
+int					skip_quotes(const char *str, int *i);
 int					skip_quotes(const char *str, int *i);
 char				**ft_split(char const *s, char c);
 char				*ft_itoa(int n);

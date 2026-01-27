@@ -6,22 +6,33 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 18:47:01 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/12/22 12:15:49 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/27 19:09:36 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
+
+static void	update_quote(char c, char *q)
+{
+	if (*q == 0 && (c == '\'' || c == '"'))
+		*q = c;
+	else if (*q == c)
+		*q = 0;
+}
 
 int	invalid_input(char *str)
 {
-	int	i;
+	int		i;
+	char	q;
 
 	i = 0;
-	while (str[i])
+	q = 0;
+	while (str && str[i])
 	{
-		if (str[i] == '\\' || str[i] == ';')
+		update_quote(str[i], &q);
+		if (q == 0 && (str[i] == '\\' || str[i] == ';'))
 		{
-			fprintf(stderr, "Error: caracter no permitido '%c'\n", str[i]);
+			fprintf(stderr, "Error: '%c'\n", str[i]);
 			return (1);
 		}
 		i++;
@@ -29,9 +40,28 @@ int	invalid_input(char *str)
 	return (0);
 }
 
-// en el subject pone "No interpretar comillas sin cerrar o caracteres 
-// especiales no especificados en el enunciado como \ (barra invertida)
-// o ; (punto y coma)." pero yo lo puse como que no ejecute nada,
-// pero en la terminal normal simplemente la ignora literalmente 
-// (echo hola\mundo holamundo) asi que tenngo que arreglar eso,
-// y tambien que no se cierre la mini.
+char	*remove_quotes(const char *s)
+{
+	size_t	i;
+	size_t	j;
+	char	q;
+	char	*res;
+
+	if (!s)
+		return (NULL);
+	res = ft_calloc(ft_strlen(s) + 1, sizeof(char));
+	if (!res)
+		return (NULL);
+	i = 0;
+	j = 0;
+	q = 0;
+	while (s[i])
+	{
+		if ((s[i] == '\'' || s[i] == '"') && (q == 0 || q == s[i]))
+			update_quote(s[i], &q);
+		else
+			res[j++] = s[i];
+		i++;
+	}
+	return (res);
+}

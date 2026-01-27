@@ -6,11 +6,11 @@
 /*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 19:34:58 by wiljimen          #+#    #+#             */
-/*   Updated: 2026/01/19 16:40:47 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/27 19:07:13 by wiljimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 int	is_valid_var_name(char *name)
 {

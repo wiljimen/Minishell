@@ -6,17 +6,11 @@
 /*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 00:29:46 by rohidalg          #+#    #+#             */
-/*   Updated: 2025/10/20 17:46:29 by rohidalg         ###   ########.fr       */
+/*   Updated: 2026/01/27 16:54:04 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	ft_exit(char *str, int ex)
-{
-	ft_putstr_fd(str, 2);
-	exit(ex);
-}
 
 void	ft_check_argv(int argc, char **argv)
 {
@@ -72,29 +66,51 @@ int	ft_file(char *file, int option)
 	return (tmp);
 }
 
+static void	exec_cmd(char **argv, char **env)
+{
+	char	*path;
+
+	if (!argv || !argv[0])
+		exit(0);
+	path = ft_getpath(argv[0], env);
+	if (!path)
+	{
+		ft_putstr_fd("command not found: ", 2);
+		ft_putendl_fd(argv[0], 2);
+		exit(127);
+	}
+	if (access(path, X_OK) != 0)
+	{
+		perror(argv[0]);
+		free(path);
+		exit(126);
+	}
+	execve(path, argv, env);
+	perror(argv[0]);
+	free(path);
+	exit(126);
+}
+
 void	ft_exec(char *command, char **env)
 {
-	char	**cmmd_part;
-	int		i;
-	char	*tmp;
+	char	**args;
+	char	**orig;
 
-	cmmd_part = ft_split(command, ' ');
-	if (!cmmd_part)
+	args = ft_split(command, ' ');
+	if (!args)
 		return ;
-	i = 0;
-	while (cmmd_part[i])
+	apply_quotes(args, env);
+	orig = args;
+	args = prepare_args(args);
+	if (!args)
 	{
-		tmp = ft_quotes(cmmd_part[i], env);
-		if (tmp)
-		{
-			free(cmmd_part[i]);
-			cmmd_part[i] = tmp;
-		}
-		i++;
+		ft_free(orig);
+		exit(1);
 	}
-	execve(ft_getpath(cmmd_part[0], env), cmmd_part, env);
-	ft_putstr_fd("command not found: ", 2);
-	ft_putendl_fd(cmmd_part[0], 2);
-	ft_free(cmmd_part);
-	exit(127);
+	if (!args[0])
+	{
+		ft_free(args);
+		exit(0);
+	}
+	exec_cmd(args, env);
 }
