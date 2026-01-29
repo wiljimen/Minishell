@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wiljimen <wiljimen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rohidalg <rohidalg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 17:48:58 by rohidalg          #+#    #+#             */
-/*   Updated: 2026/01/27 19:12:43 by wiljimen         ###   ########.fr       */
+/*   Updated: 2026/01/28 14:45:23 by rohidalg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 # include "../pipex/pipex.h"
 # include <errno.h>
+# include <limits.h>
 # include <pthread.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -37,11 +38,10 @@ typedef struct s_vars
 
 typedef struct s_exp
 {
-	char	**env;
-	int		last;
-	char	q;
-}	t_exp;
-
+	char			**env;
+	int				last;
+	char			q;
+}					t_exp;
 
 typedef struct s_pipe_data
 {
@@ -118,6 +118,7 @@ char				**env_set(char *arg, char **g_env);
 int					vars_counter(t_vars *vars);
 char				**vars_copy(t_vars *vars);
 char				*ft_getpath(char *cmd, char **env);
+int					builtin_exit(char **args);
 
 //------------------------SIGNALS-----------------------------//
 
@@ -143,7 +144,8 @@ void				run_exec_args(char **args, char **g_env);
 int					exec_error(char *cmd);
 char				*append_char(char *s, char c);
 char				*expansor_exit(char *out, int *i, int last);
-char				*expansor_var(char *out, const char *s, int *i, char **g_env);
+char				*expansor_var(char *out, const char *s, int *i,
+						char **g_env);
 
 //------------------------PIPE_ENTRY------------------------------//
 
